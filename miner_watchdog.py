@@ -33,6 +33,12 @@ def kill_miner():
 
 def main():
 
+    OK = '\033[36m'
+    FAIL = '\033[41m'
+    LOG = '\033[32m'
+    WARNING = '\033[33m'
+    ENDC = '\033[0m'
+
     cmd_name = sys.argv[1]
     cmd_path = sys.argv[2]
     timeout = int(sys.argv[3])
@@ -46,12 +52,17 @@ def main():
         count += 1
         now = datetime.now()
         time_delta = (now - last_check).total_seconds()
-        print("\nTime Now = {}, Time Last = {}, Time Elapsed = {} Sec".format(now.strftime("%Y-%m-%d %H:%M:%S"),
-                                                                            last_check.strftime("%Y-%m-%d %H:%M:%S"),
-                                                                            int(time_delta)))
+
+        if time_delta <= timeout:
+            print(OK, "[WatchDog] Now = {}, Last = {}, Elapsed = {} Sec".format(now.strftime("%Y-%m-%d %H:%M:%S"),
+                                                                    last_check.strftime("%Y-%m-%d %H:%M:%S"),
+                                                                    int(time_delta)), ENDC)
 
         if time_delta > timeout:
-            print("Miner is Not Responsive, Restart ---> ")
+            print(FAIL, "[WatchDog] Now = {}, Last = {}, Elapsed = {} Sec".format(now.strftime("%Y-%m-%d %H:%M:%S"),
+                                                                    last_check.strftime("%Y-%m-%d %H:%M:%S"),
+                                                                    int(time_delta)), ENDC)
+            print(WARNING, "Miner is Not Responsive, Restart ---> ")
             kill_miner()
             READ_FLAG[0] = False
             print("Miner Restarting, Wait ---> ")
@@ -59,12 +70,12 @@ def main():
             READ_FLAG[0] = True
             run_miner(cmd_name, cmd_path)
             last_check = datetime.now()
-            print("Miner Restarting Complete ---> ")
+            print("Miner Restarting Complete ---> ", ENDC)
 
         while linebuffer:
             status =(linebuffer.pop()).decode(errors='ignore').rstrip('\n')
             time_stamp = re.search(r'\d{4}-\d{2}-\d{2}\s{1}\d{2}:\d{2}:\d{2}', status)
-            print("[Miner] {}".format(status))
+            print(LOG, "[Miner]  ", ENDC, status)
             if time_stamp:
                 # print(time_stamp.group(0))
                 last_check = datetime.strptime(time_stamp.group(0), '%Y-%m-%d %H:%M:%S')
