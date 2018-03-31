@@ -5,28 +5,28 @@ import time
 from datetime import datetime
 import re
 from threading import Thread, Event
+import select
 
 READ_FLAG =[True]
 
-linebuffer=[]
+miner_stdout_buffer = []
 
 def run_miner(cmd_name, cmd_path):
-    proc = subprocess.Popen(cmd_name, cwd=cmd_path,
+    miner_proc = subprocess.Popen(cmd_name, cwd=cmd_path,
                             stdout = subprocess.PIPE, stderr = subprocess.PIPE, shell=True)
-    output = proc.stdout
+    miner_stdout = miner_proc.stdout
 
-    def reader(f, buffer):
+    def reader(stdout_pipe, miner_stdout_buffer):
         while READ_FLAG[0] == True:
-            line=f.readline()
+            line = stdout_pipe.readline()
             if line:
-                buffer.append(line)
+                miner_stdout_buffer.append(line)
             else:
-                # print("Read Over")
                 break
 
-    t = Thread(target=reader,args=(output, linebuffer))
-    t.daemon=True
-    t.start()
+    thread = Thread(target=reader, args=(miner_stdout, miner_stdout_buffer))
+    thread.daemon = True
+    thread.start()
 
 def kill_miner():
     proc = subprocess.Popen("taskkill /im ccminer.exe /f", stdout = subprocess.PIPE, stderr = subprocess.PIPE, shell=True)
@@ -72,8 +72,8 @@ def main():
             last_check = datetime.now()
             print("Miner Restarting Complete ---> ", ENDC)
 
-        while linebuffer:
-            status =(linebuffer.pop()).decode(errors='ignore').rstrip('\n')
+        while miner_stdout_buffer:
+            status =(miner_stdout_buffer.pop()).decode(errors='ignore').rstrip('\n')
             time_stamp = re.search(r'\d{4}-\d{2}-\d{2}\s{1}\d{2}:\d{2}:\d{2}', status)
             print(LOG, "[Miner]  ", ENDC, status)
             if time_stamp:
