@@ -53,7 +53,7 @@ def main():
 
     timeout = 300
     hostname = sys.argv[1]
-    switch_count = int(sys.argv[2]) * 2 # 15 Min = 90 Count
+    switch_count = int(sys.argv[2]) * 6 # 15 Min = 90 Count
 
     last_check = datetime.now()
     count = 0
