@@ -1,0 +1,12 @@
+{
+  "type": "service_account",
+  "project_id": "profit-switching",
+  "private_key_id": "8b23d1ff234399fff6e4e5d4fac590f21f24e6d8",
+  "private_key": "-----BEGIN PRIVATE KEY-----\nMIIEvQIBADANBgkqhkiG9w0BAQEFAASCBKcwggSjAgEAAoIBAQC4RSl6irnSirn8\nh7sr4c53ieApRsjBkdAS5VoxUrNj9mNMOI4UjFSrYqwCRIpkJeJXIou1AUTqD9wy\nmhM+o/YtRJf3xEGaf1waUdaagjTVYasLhyuUqacyIlDxN/qxRdXzhgC4GXOfodh+\nl5hnbIs85dAMiyJV4tnmD49JQDu5MfYs7brzRMvoS/KeliPpgGi2zXcayV3u7RpW\n+ACyuvh9N+JpLGFCde2ArX6Cx0ODs05aKqGTTqrBAGh/J4oHoutM7ld+AqgacVic\ndxiSy97m/b0Pda8u+3jScuWu9r2FtvT/jZWpp2yq1vk4GfzXeqxyDXaZ+KVayQFg\noaGZBPw9AgMBAAECggEAJItY2Mvq4uGu1XGAsgj4BraCDYWTemol0x2Ht9jwKU67\nrinYKaSUBSJOPSvlK0vlGcVI4jaUeXv4PlPWpblkMOGV5uYV4aNI+5JH5oAUpM3Y\nG3Ls9nB372YlWdVxgxc3wXJNsbUgfGPfWOnNKJO7AHKOQnKUdmaFMs5aqxsRTR6P\nzAyMAW4zUAyjpiM9w+nBt7Fopt4/ZSit3LH6dfpA8FZMQzjlt/cmH+UW67+od4pu\n+Ga40SVMY2z2skp1DZvK8QPZWgryxIsC5rMZ9ILVH1wea/c2mg8ernabcE+Tk3ID\n0Ms4TkGCpqM4SS3HeZvFd/RzK2In/02NE1EDFETScQKBgQD4D8I8j27wJyaFVK6W\n/G8rNq5/OPBYqLCcyx7tmwGxrR84lvXQoJeVF8Uwnwd2gHVflVPaznK8ivsJFZYA\nNsIzEJCWmOyPzFOs79yJVz4xAZPqs63WPvFoi+zLMJbKN1CpmVe93il3Ey0nTgU2\nihee9auzkRFgfJG40XUNdmmZEQKBgQC+KssHdo7IqKPKaH2H/TGCpVwOFub0ofda\n+f0lRfyNM4yM75UVp7dQpMLEMx/ceHFdaYR0pare79msdcCvV2IVyvzTKRon+U6m\n44W7e8SjwOu/ttHs/j72rGDjkRTLuw2rhtjAIo3Xah4ooU5rEggbjLO3aERuRpdv\nJbPlPqHQbQKBgH54YlpH8pKkE0KlAwJdnzwT+/FHEVrSXoECGjmf7sQsdJ+Ab8E3\nLzFHVjTMz5w+MBlUY9VJrjusTAK8q6ZeRLKOPnlZbDqAPSUNgY3QGhgYKtbdVsLF\ngoT/2fFaS3a7rvdZA9/8lX1tHHdOkt/Ulehobmr1ijt8JztoJtp/RaVRAoGBAJfT\nDINp2TdExHfeEpLWx4d5w9QP3tZi1VxSCBSRGsAU7tq6kLlYTJfa4xDHjGF123Rr\nwO9sMM6KiawR2wNibZHenRltUE+n0G6Xafa0KtteNBm8uT9QAS7pkvU8qHC7Z3+R\nSk2jiMD6HRftKPF81PJB1F3Spgew3khDvquA5KnFAoGAM17zyWk/+L2Hk5JgYwow\norxJWcbI9mBlRIB5bj3tvOIDf7cZp1dJxcBgOq0SmS4KUoQTU2jKy/I/9wwoeL0q\n2VFUjRUQJrtdlwnqPJe9yBdZG7go7iD5l8/oynfbopr4HRhek9xvtQLIodIK584V\np6+q9IH7BnvURlMYLN4wy/E=\n-----END PRIVATE KEY-----\n",
+  "client_email": "new-service-account3@profit-switching.iam.gserviceaccount.com",
+  "client_id": "114035301570123380740",
+  "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+  "token_uri": "https://accounts.google.com/o/oauth2/token",
+  "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+  "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/new-service-account3%40profit-switching.iam.gserviceaccount.com"
+}
