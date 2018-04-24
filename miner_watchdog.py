@@ -116,14 +116,14 @@ def main():
                                                                     int(time_delta)), ENDC)
 
         if time_delta > timeout:
-            print(FAIL, "[WatchDog] Mining [{}]. Now = {}, Last = {}, Elapsed = {} Sec".format(ecent_coin, now.strftime("%Y-%m-%d %H:%M:%S"),
+            print(FAIL, "[WatchDog] Mining [{}]. Now = {}, Last = {}, Elapsed = {} Sec".format(recent_coin, now.strftime("%Y-%m-%d %H:%M:%S"),
                                                                     last_check.strftime("%Y-%m-%d %H:%M:%S"),
                                                                     int(time_delta)), ENDC)
             print(WARNING, "Miner is Not Responsive, Restart ---> ")
             kill_miner()
             READ_FLAG[0] = False
             print("Miner Restarting, Wait ---> ")
-            time.sleep(10)
+            time.sleep(60)
             READ_FLAG[0] = True
             run_miner(cmd_name, cmd_path)
             last_check = datetime.now()
