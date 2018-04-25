@@ -19,14 +19,22 @@ READ_FLAG =[True]
 
 miner_stdout_buffer = []
 
-def get_most_profitable_coin(coin_pos):
-    scope = ['https://spreadsheets.google.com/feeds']
-    creds = ServiceAccountCredentials.from_json_keyfile_name('key3.json', scope)
-    gc = gspread.authorize(creds)
-    wks = gc.open_by_url("https://docs.google.com/spreadsheets/d/12G_XdpgLKY_nb3zYI1BWfncjMJBcqVROkHoJcXO-JcE").worksheet("Coin Switch")
-    coin = wks.acell(coin_pos).value
-    print(OK, "[WatchDog] Recent Most Profitable Coin is {}".format(coin), ENDC)
+def get_most_profitable_coin(coin_pos, miner_dict, default_coin):
+    try:
+        scope = ['https://spreadsheets.google.com/feeds']
+        creds = ServiceAccountCredentials.from_json_keyfile_name('key3.json', scope)
+        gc = gspread.authorize(creds)
+        wks = gc.open_by_url("https://docs.google.com/spreadsheets/d/12G_XdpgLKY_nb3zYI1BWfncjMJBcqVROkHoJcXO-JcE").worksheet("Coin Switch")
+        coin = wks.acell(coin_pos).value
+    except Exception as e:
+        print(FAIL, "[WatchDog] Exception [{}] in Fetching Coin in Gspreadsheet. Load Default Coin [{}]".format(e, default_coin), ENDC)
+        return default_coin
 
+    if coin != "stay" and coin not in miner_dict:
+        print(FAIL, "[WatchDog] Unknown Coin [{}]. Load Default Coin [{}]".format(coin, default_coin), ENDC)
+        return default_coin
+
+    print(OK, "[WatchDog] Recent Most Profitable Coin is {}".format(coin), ENDC)
     return coin
 
 def run_miner(cmd_name, cmd_path):
@@ -54,7 +62,7 @@ def main():
     timeout = 300
     hostname = sys.argv[1]
 
-    if len(sys.argv) == 5 and sys.argv[-1] == 'debug':
+    if len(sys.argv) == 6 and sys.argv[-1] == 'debug':
         print(OK, "[WatchDog] Debug Mode", ENDC)
         switch_count = int(sys.argv[2]) * 2 # 15 Min = 90 Count
     else:
@@ -68,16 +76,28 @@ def main():
         gspread_coin_dict = yaml.load(f)
     coin_pos = gspread_coin_dict[hostname]
 
-    if sys.argv[3] == "multi":
-        profit_switching_flag = True
-        coin = get_most_profitable_coin(coin_pos)
-    else:
-        coin = sys.argv[2]
-
-
     # Load Miner Configuration include Script Name and Path
     with open("miner_conf.yaml", 'r') as f:
         miner_dict = yaml.load(f)
+
+    default_coin = sys.argv[3]
+    if default_coin in miner_dict:
+        print(OK, "[WatchDog] Default Coin: {}".format(default_coin), ENDC)
+    else:
+        print(FAIL, "[WatchDog] No Such Default Coin: {}".format(default_coin), ENDC)
+        sys.exit(1)
+
+
+    if sys.argv[4] == "multi":
+        profit_switching_flag = True
+        coin = get_most_profitable_coin(coin_pos, miner_dict, default_coin)
+        if coin == "stay":
+            print(OK, "[WatchDog] Stay with Recent Coin. Mining Default Coin: {}".format(default_coin), ENDC)
+            coin = default_coin
+
+    else:
+        profit_switching_flag = False
+        coin = defult_coin
 
     num_algo = len(miner_dict)
     if num_algo < 2:
@@ -99,7 +119,12 @@ def main():
 
         if count == switch_count:
             if profit_switching_flag:
-                coin = get_most_profitable_coin(coin_pos)
+                coin = get_most_profitable_coin(coin_pos, miner_dict, default_coin)
+
+                if coin == "stay":
+                    coin = recent_coin
+                    print(OK, "[WatchDog] Stay with Recent Coin [{}]".format(coin), ENDC)
+
                 if not recent_coin == coin:
                     print(WARNING, "[WatchDog] Most Profitable Coin Changes, Restart >>>>>>>> ")
                     print(WARNING, "[WatchDog] Killing Recent Mining Process ")
