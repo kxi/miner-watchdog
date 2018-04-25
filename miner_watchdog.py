@@ -46,14 +46,19 @@ def run_miner(cmd_name, cmd_path):
     thread.daemon = True
     thread.start()
 
-def kill_miner():
-    proc = subprocess.Popen("taskkill /im ccminer.exe /f", stdout = subprocess.PIPE, stderr = subprocess.PIPE, shell=True)
+def kill_miner(cmd_miner):
+    proc = subprocess.Popen("taskkill /im {} /f".format(cmd_miner), stdout = subprocess.PIPE, stderr = subprocess.PIPE, shell=True)
 
 def main():
 
     timeout = 300
     hostname = sys.argv[1]
-    switch_count = int(sys.argv[2]) * 6 # 15 Min = 90 Count
+
+    if len(sys.argv) == 5 and sys.argv[-1] == 'debug':
+        print(OK, "[WatchDog] Debug Mode", ENDC)
+        switch_count = int(sys.argv[2]) * 2 # 15 Min = 90 Count
+    else:
+        switch_count = int(sys.argv[2]) * 6 # 15 Min = 90 Count
 
     last_check = datetime.now()
     count = 0
@@ -82,6 +87,8 @@ def main():
 
     cmd_name = miner_dict[coin]['script']
     cmd_path = miner_dict[coin]['path']
+    cmd_miner = miner_dict[coin]['miner']
+
     run_miner(cmd_name, cmd_path)
     recent_coin = coin
 
@@ -97,12 +104,12 @@ def main():
                     print(WARNING, "[WatchDog] Most Profitable Coin Changes, Restart >>>>>>>> ")
                     cmd_name = miner_dict[coin]['script']
                     cmd_path = miner_dict[coin]['path']
-                    run_miner(cmd_name, cmd_path)
+                    cmd_miner = miner_dict[coin]['miner']
                     recent_coin = coin
-                    kill_miner()
+                    kill_miner(cmd_miner)
                     READ_FLAG[0] = False
                     print(" [WatchDog] Miner Restarting, Wait... ")
-                    time.sleep(10)
+                    time.sleep(30)
                     READ_FLAG[0] = True
                     run_miner(cmd_name, cmd_path)
                     last_check = datetime.now()
@@ -120,10 +127,10 @@ def main():
                                                                     last_check.strftime("%Y-%m-%d %H:%M:%S"),
                                                                     int(time_delta)), ENDC)
             print(WARNING, "Miner is Not Responsive, Restart ---> ")
-            kill_miner()
+            kill_miner(cmd_miner)
             READ_FLAG[0] = False
             print("Miner Restarting, Wait ---> ")
-            time.sleep(60)
+            time.sleep(30)
             READ_FLAG[0] = True
             run_miner(cmd_name, cmd_path)
             last_check = datetime.now()
