@@ -130,10 +130,9 @@ def main():
                     print(WARNING, "[WatchDog] Killing Recent Mining Process ")
                     kill_miner(cmd_miner)
                     READ_FLAG[0] = False
-                    time.sleep(15)
+                    time.sleep(10)
 
                     print(" [WatchDog] Miner Restarting, Wait... ")
-                    time.sleep(15)
                     READ_FLAG[0] = True
                     cmd_name = miner_dict[coin]['script']
                     cmd_path = miner_dict[coin]['path']
