@@ -102,15 +102,18 @@ def main():
                 coin = get_most_profitable_coin(coin_pos)
                 if not recent_coin == coin:
                     print(WARNING, "[WatchDog] Most Profitable Coin Changes, Restart >>>>>>>> ")
+                    print(WARNING, "[WatchDog] Killing Recent Mining Process ")
+                    kill_miner(cmd_miner)
+                    READ_FLAG[0] = False
+                    time.sleep(15)
+
+                    print(" [WatchDog] Miner Restarting, Wait... ")
+                    time.sleep(15)
+                    READ_FLAG[0] = True
                     cmd_name = miner_dict[coin]['script']
                     cmd_path = miner_dict[coin]['path']
                     cmd_miner = miner_dict[coin]['miner']
                     recent_coin = coin
-                    kill_miner(cmd_miner)
-                    READ_FLAG[0] = False
-                    print(" [WatchDog] Miner Restarting, Wait... ")
-                    time.sleep(30)
-                    READ_FLAG[0] = True
                     run_miner(cmd_name, cmd_path)
                     last_check = datetime.now()
                     print(" [WatchDog] Miner Restarting Complete >>>>>>>>", ENDC)
