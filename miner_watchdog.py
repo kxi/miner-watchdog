@@ -37,6 +37,26 @@ def get_most_profitable_coin(coin_pos, miner_dict, default_coin):
     print(OK, "[WatchDog] Recent Most Profitable Coin is {}".format(coin), ENDC)
     return coin
 
+
+def update_mining_coin(coin_pos, coin):
+    try:
+        scope = ['https://spreadsheets.google.com/feeds']
+        creds = ServiceAccountCredentials.from_json_keyfile_name('key3.json', scope)
+        gc = gspread.authorize(creds)
+        wks = gc.open_by_url("https://docs.google.com/spreadsheets/d/12G_XdpgLKY_nb3zYI1BWfncjMJBcqVROkHoJcXO-JcE").worksheet("Coin Switch")
+        dt_now = datetime.now().strftime('%Y-%m-%d %H:%M')
+        wks.update_acell("C"+coin_pos[1], coin)
+        wks.update_acell("D"+coin_pos[1], dt_now)
+
+    except Exception as e:
+        print(FAIL, "[WatchDog] Fail to Upload Coin Mining Status to Spreadsheet", ENDC)
+        return
+
+    print(OK, "[WatchDog] Successfully Upload Coin Mining Status to Spreadsheet", ENDC)
+    return
+
+
+
 def run_miner(cmd_name, cmd_path):
     miner_proc = subprocess.Popen(cmd_name, cwd=cmd_path,
                             stdout = subprocess.PIPE, stderr = subprocess.PIPE, shell=True)
@@ -65,8 +85,11 @@ def main():
     if len(sys.argv) == 6 and sys.argv[-1] == 'debug':
         print(OK, "[WatchDog] Debug Mode", ENDC)
         switch_count = int(sys.argv[2]) * 2 # 15 Min = 90 Count
+        status_upload_count = int(sys.argv[2])
+
     else:
         switch_count = int(sys.argv[2]) * 6 # 15 Min = 90 Count
+        status_upload_count = int(sys.argv[2])
 
     last_check = datetime.now()
     count = 0
@@ -143,6 +166,8 @@ def main():
                     print(" [WatchDog] Miner Restarting Complete >>>>>>>>", ENDC)
             count = 0
 
+        if count == status_upload_count:
+            update_mining_coin(coin_pos, recent_coin)
 
         if time_delta <= timeout:
             print(OK, "[WatchDog] Mining [{}]. Now = {}, Last = {}, Elapsed = {} Sec".format(recent_coin, now.strftime("%Y-%m-%d %H:%M:%S"),
