@@ -197,11 +197,22 @@ def main():
 
         while miner_stdout_buffer:
             status =(miner_stdout_buffer.pop()).decode(errors='ignore').rstrip('\n')
-            time_stamp = re.search(r'\d{4}-\d{2}-\d{2}\s{1}\d{2}:\d{2}:\d{2}', status)
+
+            if cmd_miner == "ccminer":
+                time_stamp = re.search(r'\d{4}-\d{2}-\d{2}\s{1}\d{2}:\d{2}:\d{2}', status)
+
+            if cmd_miner == "z-enemy":
+                time_stamp = re.search(r'\d{2}/\d{2}/\d{2}\s{1}\d{2}:\d{2}:\d{2}', status)
+
             print(LOG, "[Miner]  ", ENDC, status)
+
             if time_stamp:
                 # print(time_stamp.group(0))
-                last_check = datetime.strptime(time_stamp.group(0), '%Y-%m-%d %H:%M:%S')
+                if cmd_miner == "ccminer":
+                    last_check = datetime.strptime(time_stamp.group(0), '%Y-%m-%d %H:%M:%S')
+
+                if cmd_miner == "z-enemy":
+                    last_check = datetime.strptime(time_stamp.group(0), '%y/%m/%d %H:%M:%S')
 
         time.sleep(10)
 
