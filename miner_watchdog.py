@@ -55,11 +55,14 @@ def update_mining_coin(coin_pos, coin):
     print(OK, "[WatchDog] Successfully Upload Coin Mining Status to Spreadsheet", ENDC)
     return
 
-
-
 def run_miner(cmd_name, cmd_path):
-    miner_proc = subprocess.Popen(cmd_name, cwd=cmd_path,
+    # miner_proc = subprocess.Popen(cmd_name, cwd=cmd_path,
+                            # stdout = subprocess.PIPE, stderr = subprocess.PIPE, shell=True)
+    miner_proc = subprocess.Popen(os.path.join(cmd_path, cmd_name),
                             stdout = subprocess.PIPE, stderr = subprocess.PIPE, shell=True)
+
+    print(OK, "[WatchDog] Command = {}".format(os.path.join(cmd_path, cmd_name)), ENDC)
+
     miner_stdout = miner_proc.stdout
 
     def reader(stdout_pipe, miner_stdout_buffer):
@@ -74,8 +77,12 @@ def run_miner(cmd_name, cmd_path):
     thread.daemon = True
     thread.start()
 
+
 def kill_miner(cmd_miner):
-    proc = subprocess.Popen("taskkill /im {} /f".format(cmd_miner), stdout = subprocess.PIPE, stderr = subprocess.PIPE, shell=True)
+    if os.name == 'posix':
+        proc = subprocess.Popen("killall {}".format(cmd_miner), stdout = subprocess.PIPE, stderr = subprocess.PIPE, shell=True)
+    else:
+        proc = subprocess.Popen("taskkill /im {} /f".format(cmd_miner), stdout = subprocess.PIPE, stderr = subprocess.PIPE, shell=True)
 
 def main():
 
@@ -120,7 +127,7 @@ def main():
 
     else:
         profit_switching_flag = False
-        coin = defult_coin
+        coin = default_coin
 
     num_algo = len(miner_dict)
     if num_algo < 2:
