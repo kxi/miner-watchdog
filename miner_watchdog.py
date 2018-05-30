@@ -197,6 +197,9 @@ def main():
             print("Miner Restarting Complete ---> ", ENDC)
 
         while miner_stdout_buffer:
+
+            time_stamp = None
+
             status =(miner_stdout_buffer.pop()).decode(errors='ignore').rstrip('\n')
 
             if cmd_miner == "ccminer":
@@ -214,6 +217,9 @@ def main():
 
                 if cmd_miner == "z-enemy":
                     last_check = datetime.strptime(time_stamp.group(0), '%y/%m/%d %H:%M:%S')
+
+            else:
+                last_check = datetime.now()
 
         time.sleep(10)
 
