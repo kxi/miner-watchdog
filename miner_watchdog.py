@@ -9,6 +9,7 @@ import select
 import gspread
 from oauth2client.service_account import ServiceAccountCredentials
 import yaml
+import socket
 
 OK = '\033[36m'
 FAIL = '\033[41m'
@@ -87,16 +88,16 @@ def kill_miner(cmd_miner):
 def main():
 
     timeout = 300
-    hostname = sys.argv[1]
+    hostname = str(socket.gethostname())
 
-    if len(sys.argv) == 6 and sys.argv[-1] == 'debug':
+    if len(sys.argv) == 5 and sys.argv[-1] == 'debug':
         print(OK, "[WatchDog] Debug Mode", ENDC)
         switch_count = int(sys.argv[2]) * 2 # 15 Min = 90 Count
         status_upload_count = int(sys.argv[2])
 
     else:
-        switch_count = int(sys.argv[2]) * 6 # 15 Min = 90 Count
-        status_upload_count = int(sys.argv[2])
+        switch_count = int(sys.argv[1]) * 6 # 15 Min = 90 Count
+        status_upload_count = int(sys.argv[1])
 
     last_check = datetime.now()
     count = 0
@@ -110,7 +111,7 @@ def main():
     with open("miner_conf.yaml", 'r') as f:
         miner_dict = yaml.load(f)
 
-    default_coin = sys.argv[3]
+    default_coin = sys.argv[2]
     if default_coin in miner_dict:
         print(OK, "[WatchDog] Default Coin: {}".format(default_coin), ENDC)
     else:
@@ -118,7 +119,7 @@ def main():
         sys.exit(1)
 
 
-    if sys.argv[4] == "multi":
+    if sys.argv[3] == "multi":
         profit_switching_flag = True
         coin = get_most_profitable_coin(coin_pos, miner_dict, default_coin)
         if coin == "stay":
