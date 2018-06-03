@@ -90,6 +90,8 @@ def main():
     timeout = 300
     hostname = str(socket.gethostname())
 
+    stratum_timeout_flag = False
+
     if len(sys.argv) == 5 and sys.argv[-1] == 'debug':
         print(OK, "[WatchDog] Debug Mode", ENDC)
         switch_count = int(sys.argv[2]) * 2 # 15 Min = 90 Count
@@ -182,11 +184,11 @@ def main():
                                                                     last_check.strftime("%Y-%m-%d %H:%M:%S"),
                                                                     int(time_delta)), ENDC)
 
-        if time_delta > timeout:
+        if time_delta > timeout or stratum_timeout_flag == True:
             print(FAIL, "[WatchDog] Mining [{}]. Now = {}, Last = {}, Elapsed = {} Sec".format(recent_coin, now.strftime("%Y-%m-%d %H:%M:%S"),
                                                                     last_check.strftime("%Y-%m-%d %H:%M:%S"),
                                                                     int(time_delta)), ENDC)
-            print(WARNING, "Miner is Not Responsive, Restart ---> ")
+            print(WARNING, "Miner is Non-Responsive or Disconnected from Pool, Restart ---> ")
             kill_miner(cmd_miner)
             READ_FLAG[0] = False
             print("Miner Restarting, Wait ---> ")
@@ -194,7 +196,9 @@ def main():
             READ_FLAG[0] = True
             run_miner(cmd_name, cmd_path)
             last_check = datetime.now()
+            stratum_timeout_flag = False
             print("Miner Restarting Complete ---> ", ENDC)
+
 
         while miner_stdout_buffer:
 
@@ -204,11 +208,16 @@ def main():
 
             if cmd_miner == "ccminer":
                 time_stamp = re.search(r'\d{4}-\d{2}-\d{2}\s{1}\d{2}:\d{2}:\d{2}', status)
+                stratum_timeout = re.search(r'stratum_subscribe timed out', status)
 
             if cmd_miner == "z-enemy":
                 time_stamp = re.search(r'\d{2}/\d{2}/\d{2}\s{1}\d{2}:\d{2}:\d{2}', status)
+                stratum_timeout = re.search(r'stratum_subscribe timed out', status)
 
             print(LOG, "[Miner]  ", ENDC, status)
+
+            if stratum_timeout:
+                stratum_timeout_flag = True
 
             if time_stamp:
                 # print(time_stamp.group(0))
