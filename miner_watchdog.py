@@ -218,9 +218,10 @@ def main():
             status =(miner_stdout_buffer.pop()).decode(errors='ignore').rstrip('\n')
             time_stamp = re.search(r'\d{4}-\d{2}-\d{2}\s{1}\d{2}:\d{2}:\d{2}', status)
             hashrate_check = re.search(r'Eth speed:\ (\d+.\d+\ )[mMgGH]+\/s.*', status)
+            
             if hashrate_check != None:
                 hashrate = hashrate_check[1]
-
+                last_check = datetime.now()
             print(LOG, "[Miner]  ", ENDC, status)
             if time_stamp:
                 # print(time_stamp.group(0))
