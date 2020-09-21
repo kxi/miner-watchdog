@@ -1,6 +1,9 @@
-raven:
-  script: ""
-  path: ""
-exvo:
-  script: ""
-  path: ""
+ETH:
+  path: "/home/coin/mining/ETH"
+  script: "RUN-ETH-MPH"
+ETC:
+  path: "/home/coin/mining/ETC"
+  script: "RUN-ETC-CUDO"
+NH_Ethash:
+  path: "/home/coin//mining/XXX"
+  script: "RUN-XXX"
